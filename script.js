@@ -7,9 +7,10 @@ const next = document.getElementById("next");
 const previous = document.getElementById("previous");
 const currentProgress = document.getElementById("current-progress");
 const progressContainer = document.getElementById("progress-container");
+const shuffleButton = document.getElementById("shuffle");
 
 
-const playlist = [
+const originalPlaylist = [
   {
     songName: "Do it",
     artist: "Chloe & Halley",
@@ -53,9 +54,10 @@ const playlist = [
     like: true,
   },
 ];
-let index = 0;
-
+let sortedPlaylist = [...originalPlaylist];
 let isPlaying = false;
+let isShuffled = false;
+let index = 0;
 
 function playMusic() {
   play.querySelector(".bi").classList.remove("bi-play-circle-fill");
@@ -80,15 +82,15 @@ function playPauseDecider() {
 }
 
 function loadSong() {
-  cover.src = `images/${playlist[index].file}.jpg`;
-  song.src = `songs/${playlist[index].songFile}.mp3`;
-  songName.innerText = playlist[index].songName;
-  bandName.innerText = playlist[index].artist;
+  cover.src = `images/${sortedPlaylist[index].file}.jpg`;
+  song.src = `songs/${sortedPlaylist[index].songFile}.mp3`;
+  songName.innerText = sortedPlaylist[index].songName;
+  bandName.innerText = sortedPlaylist[index].artist;
 }
 
 function previousSong() {
   if (index === 0) {
-    index = playlist.length - 1;
+    index = sortedPlaylist.length - 1;
   } else {
     index -= 1;
   }
@@ -97,7 +99,7 @@ function previousSong() {
 }
 
 function nextSong() {
-  if (index === playlist.length - 1) {
+  if (index === sortedPlaylist.length - 1) {
     index = 0;
   } else {
     index += 1;
@@ -118,6 +120,31 @@ function jumpTo(event) {
     song.currentTime = jumpToTime;
 }
 
+function shuffleArray(preShuffleArray) {
+    const size = preShuffleArray.length;
+    let currentIndex = size - 1;
+    while (currentIndex > 0) {
+        let randomIndex = Math.floor(Math.random() * size);
+        let aux = preShuffleArray[currentIndex];
+        preShuffleArray[currentIndex] = preShuffleArray[randomIndex];
+        preShuffleArray[randomIndex] = aux;
+        currentIndex -= 1;
+    }
+}
+
+function shuffleButtonClicked() {
+    if (isShuffled === false) {
+        isShuffled = true;
+        shuffleArray(sortedPlaylist);
+        shuffleButton.classList.add('button-active');
+    } else {
+        isShuffled = false;
+        sortedPlaylist = [...originalPlaylist];
+        shuffleButton.classList.remove('button-active');
+
+    }
+}
+
 loadSong();
 
 play.addEventListener("click", playPauseDecider);
@@ -125,3 +152,4 @@ previous.addEventListener("click", previousSong);
 next.addEventListener("click", nextSong);
 song.addEventListener('timeupdate', updateProgressBar)
 progressContainer.addEventListener('click', jumpTo)
+shuffleButton.addEventListener('click', shuffleButtonClicked)
