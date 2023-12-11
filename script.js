@@ -5,6 +5,7 @@ const cover = document.getElementById("cover");
 const play = document.getElementById("play");
 const next = document.getElementById("next");
 const previous = document.getElementById("previous");
+const likeButton = document.getElementById("like");
 const currentProgress = document.getElementById("current-progress");
 const progressContainer = document.getElementById("progress-container");
 const shuffleButton = document.getElementById("shuffle");
@@ -19,42 +20,42 @@ const originalPlaylist = [
     artist: "Chloe & Halley",
     file: "ungodly-hour",
     songFile: "do_it",
-    like: true,
+    liked: true,
   },
   {
     songName: "I Don't Mind",
     artist: "Lloyd",
     file: "street_love",
     songFile: "i_dont_mind",
-    like: true,
+    liked: false,
   },
   {
     songName: "Mercy",
     artist: "Kenye West",
     file: "mercy",
     songFile: "mercy",
-    like: true,
+    liked: false,
   },
   {
     songName: "Rain On Me",
     artist: "Lady Gaga feat. Ariana Grande",
     file: "chromatica",
     songFile: "rain_on_me",
-    like: true,
+    liked: false,
   },
   {
     songName: "Undercover",
     artist: "Kehlani",
     file: "SweetSexySavage",
     songFile: "undercover",
-    like: true,
+    liked: false,
   },
   {
     songName: "Wind Up",
     artist: "Keke Palmer",
     file: "wind_up",
     songFile: "wind_up",
-    like: true,
+    liked: false,
   },
 ];
 let sortedPlaylist = [...originalPlaylist];
@@ -85,11 +86,34 @@ function playPauseDecider() {
   }
 }
 
+function likeButtonRender() {
+    if (sortedPlaylist[index].liked === true) {
+        likeButton.querySelector('.bi').classList.remove('bi-heart')
+        likeButton.querySelector('.bi').classList.add('bi-heart-fill')
+        likeButton.classList.add('button-active')
+    } else {
+        likeButton.querySelector('.bi').classList.add('bi-heart')
+        likeButton.querySelector('.bi').classList.remove('bi-heart-fill')
+        likeButton.classList.remove('button-active')
+        
+    }
+}
+
+function likeButtonClicked() {
+    if (sortedPlaylist[index].liked === false) {
+        sortedPlaylist[index].liked = true;        
+    } else {
+        sortedPlaylist[index].liked = false;
+    }
+    likeButtonRender();
+}
+
 function loadSong() {
   cover.src = `images/${sortedPlaylist[index].file}.jpg`;
   song.src = `songs/${sortedPlaylist[index].songFile}.mp3`;
   songName.innerText = sortedPlaylist[index].songName;
   bandName.innerText = sortedPlaylist[index].artist;
+  likeButtonRender();
 }
 
 function previousSong() {
@@ -192,3 +216,4 @@ song.addEventListener('loadedmetadata', updateTotalTime)
 progressContainer.addEventListener('click', jumpTo)
 shuffleButton.addEventListener('click', shuffleButtonClicked)
 repeatButton.addEventListener('click', repeatButtonClicked)
+likeButton.addEventListener('click', likeButtonClicked)
